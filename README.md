@@ -54,8 +54,9 @@ println(data)
 
 ###Done:
 
-- Support several symbols for Google (daily) DataReader - return as OrderedDict
-- Google daily DataReader (only one symbol at a time)
+- Yahoo Finance daily DataReader (only one symbol at a time)
+- Support several symbols for Google Finance daily DataReader - return as OrderedDict
+- Google Finance daily DataReader (only one symbol at a time)
 
 ###ToDo:
 

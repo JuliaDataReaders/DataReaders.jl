@@ -1,4 +1,4 @@
-__precompile__()
+#__precompile__()
 
 #=
 A [Julia](http://julialang.org/) library to get remote data 
@@ -36,7 +36,9 @@ module DataReader
     immutable DataReaderParameters
         retry_count::Int
         pause::AbstractFloat
+        timeout::AbstractFloat
     end
+    DEFAULT_PARAMS = DataReaderParameters(3, 0.1, 30)
 
     immutable DataSymbol
         s::AbstractString
@@ -47,48 +49,47 @@ module DataReader
     convert(::Type{DataSymbol}, s::ASCIIString) = DataSymbol(s)
     typealias DataSymbols Array{DataSymbol,1}
 
-    function get(source::DataSource, symb::DataSymbol, dt_start::Date, dt_end::Date, params::DataReaderParameters)
-        s_source = uppercase(source.s)
-        if s_source == "GOOG" then
-            get_data_google(symb, dt_start, dt_end, params)
-        elseif s_source == "YAHOO" then
-            get_data_yahoo(symb, dt_start, dt_end, params)
+    include("google/daily.jl")
+    include("yahoo/daily.jl")
+
+    #=
+    f_dict = Dict{ASCIIString,Function}(
+        "google"=>get_data_google,
+        "yahoo"=>get_data_yahoo
+    )
+    =#
+
+    function get(source::DataSource, symb::DataSymbol, dt_start::Date, dt_end::Date; params=DEFAULT_PARAMS)
+        s_source = lowercase(source.s)
+        if s_source == "google" then
+            get_data_google(symb, dt_start, dt_end, params=params)
+        elseif s_source == "yahoo" then
+            get_data_yahoo(symb, dt_start, dt_end, params=params)
         else
             error("'$(source.s)' is not an allowed data source")
         end
     end
 
-    function get(source::DataSource, symbols::DataSymbols, dt_start::Date, dt_end::Date, params::DataReaderParameters)
+    function get_several_symbols_to_ordereddict(source::DataSource, symbols::DataSymbols, dt_start::Date, dt_end::Date; params=params::DataReaderParameters)
         d = OrderedDict{DataSymbol,DataFrame}()
         for symb in symbols
-            data = get(source, symb, dt_start, dt_end, params)
+            data = get(source, symb, dt_start, dt_end, params=params)
             d[symb] = data
         end
         return d
     end
 
-    function get_data_yahoo(symbol::DataSymbol, dt_start::Date, dt_end::Date, params::DataReaderParameters)
-        error("ToDo")
-    end
-
-    function get_data_google(symbol::DataSymbol, dt_start::Date, dt_end::Date, params::DataReaderParameters)
-        url = "http://www.google.com/finance/historical"
-        fmt = "uuu dd, yyyy"  # "%b %d, %Y"
-        query = Dict{AbstractString,AbstractString}(
-            "q" => symbol.s,
-            "startdate" => Dates.format(dt_start, fmt),
-            "enddate" => Dates.format(dt_end, fmt),
-            "output" => "csv"
-        )
-        r = get_response(url, query, params)
-        df = readtable(r)
-        rename!(df, :_Date, :Date)
-        df[:Date] = Date(df[:Date], "d-uuu-yy") + Base.Dates.Year(2000)
-        return df
+    function get(source::DataSource, symbols::DataSymbols, dt_start::Date, dt_end::Date; params=DEFAULT_PARAMS)
+        s_source = lowercase(source.s)
+        if s_source in ["google", "yahoo"] then
+            get_several_symbols_to_ordereddict(source, symbols, dt_start, dt_end, params=params)
+        else
+            error("'$(source.s)' is not an allowed data source")
+        end        
     end
 
     function get_response(url::AbstractString, query::Dict{AbstractString,AbstractString}, params::DataReaderParameters)
-        r = get_streaming(url; query = query, timeout = 30.0)
+        r = get_streaming(url; query = query, timeout = params.timeout)
         if r.response.status / 100 != 2
             error("Error downloading data")
         end
@@ -96,3 +97,6 @@ module DataReader
     end
 
 end
+
+
+
