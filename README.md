@@ -105,7 +105,7 @@ DataStructures.OrderedDict(DataReader.DataSymbol("IBM")=>10x6 DataFrames.DataFra
 
  - Support several symbols for Google (daily) DataReader - return as Panel (see https://github.com/JuliaStats/DataFrames.jl/issues/941 )
  - Support others data source (Yahoo...)
- - Requests-cache mechanism (see https://github.com/JuliaLang/HDF5.jl/issues/296 )
+ - Requests-cache mechanism (see https://github.com/JuliaLang/HDF5.jl/issues/296 and https://github.com/femtotrader/RequestsCache.jl/)
  - Unit testing
  - Continuous Integration
  - Packaging
