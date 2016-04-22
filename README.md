@@ -54,7 +54,7 @@ println(data)
 
 ###Done:
 
-- Yahoo Finance daily DataReader (only one symbol at a time)
+- Yahoo Finance daily DataReader
 - Support several symbols for Google Finance daily DataReader - return as OrderedDict
 - Google Finance daily DataReader (only one symbol at a time)
 
