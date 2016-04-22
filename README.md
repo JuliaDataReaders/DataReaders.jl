@@ -1,6 +1,6 @@
 # DataReader.jl
 
-WORK IN PROGRESS!!! NOT USABLE FOR NOW!!!
+WORK IN PROGRESS!!!
 
 A [Julia](http://julialang.org/) library to get remote data via [Requests.jl](https://github.com/JuliaWeb/Requests.jl) and get DataFrames thanks to [DataFrames.jl](https://dataframesjl.readthedocs.org/).
 
