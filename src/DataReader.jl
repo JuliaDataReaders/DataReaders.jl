@@ -26,12 +26,24 @@ module DataReader
     import Requests: get, get_streaming
     import DataFrames: readtable, DataFrame, rename!
     import DataStructures: OrderedDict
+    #import RequestsCache: Session, CacheSession, get
 
-    immutable DataSource
-        s::AbstractString
+    abstract DataSource
+    type DataSourceGoogleDaily <: DataSource end
+    type DataSourceGoogleQuotes <: DataSource end
+    type DataSourceYahooDaily <: DataSource end
+
+    function DataSource(s_source)
+        if s_source == "google" then
+            DataSourceGoogleDaily()
+        elseif s_source == "google-quotes" then
+            DataSourceGoogleQuotes()
+        elseif s_source == "yahoo" then
+            DataSourceYahooDaily()
+        else
+            error("'$s_source' is not an allowed data source")
+        end
     end
-    Base.hash(src::DataSource, h::UInt) = hash(src.s, hash(:DataSource, h))
-    Base.(:(==))(src1::DataSource, src2::DataSource) = isequal(src1.s, src2.s) 
 
     immutable DataReaderParameters
         retry_count::Int
@@ -39,6 +51,8 @@ module DataReader
         timeout::AbstractFloat
     end
     DEFAULT_PARAMS = DataReaderParameters(3, 0.1, 30)
+    DEFAULT_DT_END = now(Dates.UTC)
+    DEFAULT_DT_START = DEFAULT_DT_END - Dates.Day(7)
 
     immutable DataSymbol
         s::AbstractString
@@ -50,42 +64,16 @@ module DataReader
     typealias DataSymbols Array{DataSymbol,1}
 
     include("google/daily.jl")
+    include("google/quotes.jl")
     include("yahoo/daily.jl")
 
-    #=
-    f_dict = Dict{ASCIIString,Function}(
-        "google"=>get_data_google,
-        "yahoo"=>get_data_yahoo
-    )
-    =#
-
-    function get(source::DataSource, symb::DataSymbol, dt_start::Date, dt_end::Date; params=DEFAULT_PARAMS)
-        s_source = lowercase(source.s)
-        if s_source == "google" then
-            get_data_google(symb, dt_start, dt_end, params=params)
-        elseif s_source == "yahoo" then
-            get_data_yahoo(symb, dt_start, dt_end, params=params)
-        else
-            error("'$(source.s)' is not an allowed data source")
-        end
-    end
-
-    function get_several_symbols_to_ordereddict(source::DataSource, symbols::DataSymbols, dt_start::Date, dt_end::Date; params=params::DataReaderParameters)
+    function get_several_symbols_to_ordereddict(source::DataSource, symbols::DataSymbols, args...; kwargs...)
         d = OrderedDict{DataSymbol,DataFrame}()
         for symb in symbols
-            data = get(source, symb, dt_start, dt_end, params=params)
+            data = get(source, symb, args...; kwargs...)
             d[symb] = data
         end
         return d
-    end
-
-    function get(source::DataSource, symbols::DataSymbols, dt_start::Date, dt_end::Date; params=DEFAULT_PARAMS)
-        s_source = lowercase(source.s)
-        if s_source in ["google", "yahoo"] then
-            get_several_symbols_to_ordereddict(source, symbols, dt_start, dt_end, params=params)
-        else
-            error("'$(source.s)' is not an allowed data source")
-        end        
     end
 
     function get_response(url::AbstractString, query::Dict{AbstractString,AbstractString}, params::DataReaderParameters)
