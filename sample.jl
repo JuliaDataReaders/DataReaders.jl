@@ -1,19 +1,22 @@
-include("src/DataReader.jl")
+include("src/DataReaders.jl")
 
-using DataReader
+using DataReaders
+using RequestsCache: CachedSession
 
-source = DataSource("google")
-#source = DataSource("yahoo")
-# params = DataReaderParameters(3, 0.1, 10)  # default parameters for DataReader (retry_count, pause, timeout, cache...)
+session = CachedSession(cache_name="cache.jld", backend="jld", expire_after=Base.Dates.Day(1))
+#session = nothing
+
+#dr = DataReader("google", session=session)
+dr = DataReader("yahoo", session=session)
 
 dt_start = DateTime("2015-04-01")
 dt_end = DateTime("2015-04-15")
 
 #symb = DataSymbol("MSFT")
-#data = get(source, symb, dt_start, dt_end)
+#data = get(dr, symb, dt_start, dt_end)
 
 symbols = DataSymbols(["IBM", "MSFT"])
-data = get(source, symbols, dt_start, dt_end)
+data = get(dr, symbols, dt_start, dt_end)
 
 println(data)
 # println(data[:Open])

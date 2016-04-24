@@ -1,4 +1,4 @@
-function get(source::DataSourceYahooDaily, symb::DataSymbol, dt_start::DateTime, dt_end::DateTime; params=DEFAULT_PARAMS)
+function get(dr::DataReaderYahooDaily, symb::DataSymbol, dt_start::DateTime, dt_end::DateTime)
     url = "http://ichart.finance.yahoo.com/table.csv"
     interval = "d"
     query = Dict{AbstractString,AbstractString}(
@@ -12,12 +12,14 @@ function get(source::DataSourceYahooDaily, symb::DataSymbol, dt_start::DateTime,
         "g" => interval,
         "ignore" => ".csv"
     )
-    r = get_response(url, query, params)
-    df = readtable(r)
+    r = get_response(url, query, dr)
+    stream = IOBuffer(readall(r))
+    df = readtable(stream)
     df[:Date] = Date(df[:Date], "yyyy-mm-dd")
+    df = df[end:-1:1, :]
     return df
 end
 
-function get(source::DataSourceYahooDaily, symbols::DataSymbols, dt_start::DateTime, dt_end::DateTime; params=DEFAULT_PARAMS)
-    get_several_symbols_to_ordereddict(source, symbols, dt_start, dt_end, params=params)
+function get(dr::DataReaderYahooDaily, symbols::DataSymbols, dt_start::DateTime, dt_end::DateTime)
+    get_several_symbols_to_ordereddict(dr, symbols, dt_start, dt_end)
 end

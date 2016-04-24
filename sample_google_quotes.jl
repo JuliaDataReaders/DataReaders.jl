@@ -1,15 +1,14 @@
-include("src/DataReader.jl")
+include("src/DataReaders.jl")
 
-using DataReader
+using DataReaders
 
-
-source = DataSource("google-quotes")
+dr = DataReader("google-quotes")
 
 symb = DataSymbol("MSFT")
-data = get(source, symb)
+data = get(dr, symb)
 
 #symbols = DataSymbols(["IBM", "MSFT"])
-#data = get(source, symbols)
+#data = get(dr, symbols)
 
 println(data)
 # println(data[:Open])
