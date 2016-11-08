@@ -1,7 +1,9 @@
 using Base.Test
 
-import DataReader: get_datareader
+using DataReaders
 
-#print(get_datareader("YAHOO"))
+include("test_google_daily.jl")
+# include("test_google_quote.jl")  # ToDo
+include("test_yahoo_daily.jl")
 
-@test 1==1
+@test 1 == 1

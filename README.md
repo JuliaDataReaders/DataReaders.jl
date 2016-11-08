@@ -31,7 +31,7 @@ julia> dt_start = DateTime("2015-04-01");
 
 julia> dt_end = DateTime("2015-04-15");
 
-julia> data = get(source, symb, dt_start, dt_end);
+julia> data = get(dr, symb, dt_start, dt_end);
 
 julia> println(data);
 10x6 DataFrames.DataFrame

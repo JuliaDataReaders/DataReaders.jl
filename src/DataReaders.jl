@@ -49,13 +49,13 @@ module DataReaders
         session
     end
 
-    function DataReader(s_source::ASCIIString; retry_count=3, pause=0.1, timeout=30, session=nothing)
+    function DataReader(s_source::String; retry_count=3, pause=0.1, timeout=30, session=nothing)
         s_source = lowercase(s_source)
-        if s_source in ["google", "google-daily"] then
+        if s_source in ["google", "google-daily"]
             DataReaderGoogleDaily(retry_count, pause, timeout, session)
-        elseif s_source == "google-quotes" then
+        elseif s_source == "google-quotes"
             DataReaderGoogleQuotes(retry_count, pause, timeout, session)
-        elseif s_source in ["yahoo", "yahoo-daily"] then
+        elseif s_source in ["yahoo", "yahoo-daily"]
             DataReaderYahooDaily(retry_count, pause, timeout, session)
         else
             error("'$s_source' is not an allowed data source")
@@ -69,9 +69,9 @@ module DataReaders
         s::AbstractString
     end
     Base.hash(symb::DataSymbol, h::UInt) = hash(symb.s, hash(:DataSymbol, h))
-    Base.(:(==))(symb1::DataSymbol, symb2::DataSymbol) = isequal(symb1.s, symb2.s) 
+    Base.:(==)(symb1::DataSymbol, symb2::DataSymbol) = isequal(symb1.s, symb2.s) 
 
-    convert(::Type{DataSymbol}, s::ASCIIString) = DataSymbol(s)
+    convert(::Type{DataSymbol}, s::String) = DataSymbol(s)
     typealias DataSymbols Array{DataSymbol,1}
 
     include("google/daily.jl")
