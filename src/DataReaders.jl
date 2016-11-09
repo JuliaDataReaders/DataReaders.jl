@@ -22,7 +22,8 @@ module DataReaders
 
     export get, DataReader, DataSymbol, DataSymbols
     export DataFrame, TimeArray
-
+    export D_DATAREADERS
+    
     import Base: convert
     import Requests: get, get_streaming
     import DataFrames: readtable, DataFrame, rename!
@@ -52,16 +53,23 @@ module DataReaders
     
     abstract DataReaderResponse
 
+    D_DATAREADERS = OrderedDict(
+        "google" => DataReaderGoogleDaily,
+        "google-daily" => DataReaderGoogleDaily,
+        "google-quotes" => DataReaderGoogleQuotes,
+        "yahoo" => DataReaderYahooDaily,
+        "yahoo-daily" => DataReaderYahooDaily
+    )
+
     function DataReader(s_source::String; retry_count=3, pause=0.1, timeout=30, session=nothing)
         s_source = lowercase(s_source)
-        if s_source in ["google", "google-daily"]
-            DataReaderGoogleDaily(retry_count, pause, timeout, session)
-        elseif s_source == "google-quotes"
-            DataReaderGoogleQuotes(retry_count, pause, timeout, session)
-        elseif s_source in ["yahoo", "yahoo-daily"]
-            DataReaderYahooDaily(retry_count, pause, timeout, session)
+        if haskey(D_DATAREADERS, s_source)
+            dr = D_DATAREADERS[s_source]
+            dr(retry_count, pause, timeout, session)
         else
-            error("'$s_source' is not an allowed data source")
+            allowed_data_source = keys(D_DATAREADERS)
+            s_allowed_data_source = "[" * join(map(s->"\""*s*"\"", allowed_data_source), ", ") * "]"
+            error("'$s_source' is not an allowed data source. It must be in $s_allowed_data_source.")
         end
     end
 
