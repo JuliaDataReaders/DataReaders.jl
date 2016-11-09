@@ -9,7 +9,9 @@ julia:
 notifications:
   email: false
 # uncomment the following lines to override the default test script
-#script:
+script:
+  - julia -e 'Pkg.clone("https://github.com/femtotrader/TimeSeriesIO.jl");';
+
 #  - if [[ -a .git/shallow ]]; then git fetch --unshallow; fi
 #  - julia -e 'Pkg.clone(pwd()); Pkg.build("DataReaders"); Pkg.test("DataReaders"; coverage=true)'
 after_success:
