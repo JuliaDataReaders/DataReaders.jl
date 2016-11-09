@@ -3,3 +3,4 @@ Requests
 RequestsCache
 DataFrames
 DataStructures
+TimeSeries
