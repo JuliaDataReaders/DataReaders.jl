@@ -1,3 +1,7 @@
+type DataReaderResponseGoogleDaily <: DataReaderResponse
+    r
+end
+
 function get(dr::DataReaderGoogleDaily, symb::DataSymbol, dt_start::DateTime, dt_end::DateTime)
     url = "http://www.google.com/finance/historical"
     fmt = "uuu dd, yyyy"  # "%b %d, %Y"
@@ -8,15 +12,26 @@ function get(dr::DataReaderGoogleDaily, symb::DataSymbol, dt_start::DateTime, dt
         "output" => "csv"
     )
     r = get_response(url, query, dr)
+    DataReaderResponseGoogleDaily(r)
+end
+
+function get(dr::DataReaderGoogleDaily, symbols::DataSymbols, dt_start::DateTime, dt_end::DateTime)
+    get_several_symbols_to_ordereddict(dr, symbols, dt_start, dt_end)
+end
+
+function DataFrame(response::DataReaderResponseGoogleDaily)
+    r = response.r
     stream = IOBuffer(readall(r))
     df = readtable(stream)  # from DataFrames.jl
-    #df = readtimearray(r.response)  # from TimeSeries.jl
     rename!(df, :_Date, :Date)
     df[:Date] = Date(df[:Date], "d-uuu-yy") + Base.Dates.Year(2000)
     df = df[end:-1:1, :]
     return df
 end
 
-function get(dr::DataReaderGoogleDaily, symbols::DataSymbols, dt_start::DateTime, dt_end::DateTime)
-    get_several_symbols_to_ordereddict(dr, symbols, dt_start, dt_end)
+function TimeArray(response::DataReaderResponseGoogleDaily)
+    r = response.r
+    stream = IOBuffer(readall(r)[4:end])
+    #ta = readtimearray(stream)  # from TimeSeries.jl
+    #wait
 end

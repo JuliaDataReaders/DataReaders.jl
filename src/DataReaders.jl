@@ -21,6 +21,7 @@ Options
 module DataReaders
 
     export get, DataReader, DataSymbol, DataSymbols
+    export DataFrame, TimeArray
 
     import Base: convert
     import Requests: get, get_streaming
@@ -48,6 +49,8 @@ module DataReaders
         timeout::AbstractFloat
         session
     end
+    
+    abstract DataReaderResponse
 
     function DataReader(s_source::String; retry_count=3, pause=0.1, timeout=30, session=nothing)
         s_source = lowercase(s_source)
@@ -79,7 +82,7 @@ module DataReaders
     include("yahoo/daily.jl")
 
     function get_several_symbols_to_ordereddict(dr::DataReader, symbols::DataSymbols, args...; kwargs...)
-        d = OrderedDict{DataSymbol,DataFrame}()
+        d = OrderedDict{DataSymbol,DataReaderResponse}()
         for symb in symbols
             data = get(dr, symb, args...; kwargs...)
             d[symb] = data
@@ -107,7 +110,12 @@ module DataReaders
         return r
     end
 
+    function DataFrame(multi_symbol_response::OrderedDict{DataSymbol,DataReaderResponse})
+        d = OrderedDict{DataSymbol,DataFrame}()
+        for (symb, response) in multi_symbol_response
+            d[symb] = DataFrame(response)
+        end
+        return d    
+    end
+
 end
-
-
-
