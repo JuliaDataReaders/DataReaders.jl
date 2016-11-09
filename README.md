@@ -1,5 +1,11 @@
 # DataReaders.jl
 
+[![Build Status](https://travis-ci.org/femtotrader/DataReaders.jl.svg?branch=master)](https://travis-ci.org/femtotrader/DataReaders.jl)
+
+[![Coverage Status](https://coveralls.io/repos/femtotrader/DataReaders.jl/badge.svg?branch=master&service=github)](https://coveralls.io/github/femtotrader/DataReaders.jl?branch=master)
+
+[![codecov.io](http://codecov.io/github/femtotrader/DataReaders.jl/coverage.svg?branch=master)](http://codecov.io/github/femtotrader/DataReaders.jl?branch=master)
+
 WORK IN PROGRESS!!!
 
 A [Julia](http://julialang.org/) library to get remote data via [Requests.jl](https://github.com/JuliaWeb/Requests.jl) and get DataFrames thanks to [DataFrames.jl](https://dataframesjl.readthedocs.org/).
