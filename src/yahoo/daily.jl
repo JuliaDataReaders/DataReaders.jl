@@ -32,3 +32,10 @@ function DataFrame(response::DataReaderResponseYahooDaily)
     df = df[end:-1:1, :]
     return df
 end
+
+function TimeArray(response::DataReaderResponseYahooDaily)
+    df = DataFrame(response)
+    ta_price = TimeArray(df, colnames=[:Open, :High, :Low, :Close, :Adj_Close])
+    ta_volume = TimeArray(df, colnames=[:Volume])
+    ta_price, ta_volume
+end

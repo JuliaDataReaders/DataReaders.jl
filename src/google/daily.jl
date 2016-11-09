@@ -30,8 +30,8 @@ function DataFrame(response::DataReaderResponseGoogleDaily)
 end
 
 function TimeArray(response::DataReaderResponseGoogleDaily)
-    r = response.r
-    stream = IOBuffer(readall(r)[4:end])
-    #ta = readtimearray(stream)  # from TimeSeries.jl
-    #wait
+    df = DataFrame(response)
+    ta_price = TimeArray(df, colnames=[:Open, :High, :Low, :Close])
+    ta_volume = TimeArray(df, colnames=[:Volume])
+    ta_price, ta_volume
 end

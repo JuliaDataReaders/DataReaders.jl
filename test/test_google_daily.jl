@@ -13,12 +13,14 @@ symb = DataSymbol("MSFT");
 
 response = get(dr, symb, dt_start, dt_end);
 
+## DataFrame
 df = DataFrame(response)
 println(df)
 
-#ta = TimeArray(response)
-#println(ta)
-
+## TimeArray
+ta_price, ta_volume = TimeArray(response)
+println(ta_price)
+println(ta_volume)
 
 # Several symbols
 # ===============

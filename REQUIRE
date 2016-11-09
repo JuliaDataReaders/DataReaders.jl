@@ -4,3 +4,4 @@ RequestsCache
 DataFrames
 DataStructures
 TimeSeries
+TimeSeriesIO

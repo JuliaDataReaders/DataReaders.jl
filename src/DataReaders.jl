@@ -26,9 +26,9 @@ module DataReaders
     import Base: convert
     import Requests: get, get_streaming
     import DataFrames: readtable, DataFrame, rename!
-    import TimeSeries: readtimearray
     import DataStructures: OrderedDict
     import RequestsCache: create_query, execute
+    using TimeSeriesIO: TimeArray
 
     abstract DataReader
     type DataReaderGoogleDaily <: DataReader
