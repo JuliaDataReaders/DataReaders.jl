@@ -105,7 +105,7 @@ DataStructures.OrderedDict(DataReaders.DataSymbol("IBM")=>10x6 DataFrames.DataFr
 
 ## Done / ToDo
 
-###Done:
+### Done:
 
 - Yahoo Finance daily DataReaders
 - Support several symbols for Google Finance daily DataReaders - return as OrderedDict
@@ -113,7 +113,7 @@ DataStructures.OrderedDict(DataReaders.DataSymbol("IBM")=>10x6 DataFrames.DataFr
 - Unit testing
 - Continuous Integration
 
-###ToDo:
+### ToDo:
 
 - Support several symbols for Google (daily) DataReaders - return as Panel (see https://github.com/JuliaStats/DataFrames.jl/issues/941 )
 - Support others data source (Yahoo...)
