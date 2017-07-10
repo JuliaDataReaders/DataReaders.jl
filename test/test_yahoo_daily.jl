@@ -2,31 +2,33 @@ using Base.Test
 
 using DataReaders
 
-dr = DataReader("yahoo")
+@testset "yahoo_daily" begin
+    dr = DataReader("yahoo")
 
-dt_start = DateTime("2015-04-01")
-dt_end = DateTime("2015-04-15")
+    dt_start = DateTime("2015-04-01")
+    dt_end = DateTime("2015-04-15")
 
-# One symbol
-# ==========
-symb = DataSymbol("MSFT")
+    @testset "one symbol" begin
+        symb = DataSymbol("MSFT")
 
-response = get(dr, symb, dt_start, dt_end)
+        response = get(dr, symb, dt_start, dt_end)
 
-## DataFrame
-df = DataFrame(response)
-println(df)
+        ## DataFrame
+        df = DataFrame(response)
+        println(df)
 
-## TimeArray
-ta_price, ta_volume = TimeArray(response)
-println(ta_price)
-println(ta_volume)
+        ## TimeArray
+        ta_price, ta_volume = TimeArray(response)
+        println(ta_price)
+        println(ta_volume)
+    end
 
-# Several symbols
-# ===============
-symbols = DataSymbols(["IBM", "MSFT"])
+    @testset "several symbols" begin
+        symbols = DataSymbol.(["IBM", "MSFT"])
 
-response = get(dr, symbols, dt_start, dt_end);
+        response = get(dr, symbols, dt_start, dt_end);
 
-data = DataFrame(response);
-println(data)
+        data = DataFrame(response);
+        println(data)
+    end
+end

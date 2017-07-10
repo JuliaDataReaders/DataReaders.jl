@@ -2,8 +2,10 @@ using Base.Test
 
 using DataReaders
 
-dr = DataReader("google-quotes")
+@testset "google_quotes" begin
+    dr = DataReader("google-quotes")
 
-symb = DataSymbol("MSFT")
+    symb = DataSymbol("MSFT")
 
-data = get(dr, symb)
+    data = get(dr, symb)
+end

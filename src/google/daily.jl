@@ -15,13 +15,13 @@ function get(dr::DataReaderGoogleDaily, symb::DataSymbol, dt_start::DateTime, dt
     DataReaderResponseGoogleDaily(r)
 end
 
-function get(dr::DataReaderGoogleDaily, symbols::DataSymbols, dt_start::DateTime, dt_end::DateTime)
+function get(dr::DataReaderGoogleDaily, symbols::Vector{DataSymbol}, dt_start::DateTime, dt_end::DateTime)
     get_several_symbols_to_ordereddict(dr, symbols, dt_start, dt_end)
 end
 
 function DataFrame(response::DataReaderResponseGoogleDaily)
     r = response.r
-    stream = IOBuffer(readall(r))
+    stream = IOBuffer(readstring(r))
     df = readtable(stream)  # from DataFrames.jl
     rename!(df, :_Date, :Date)
     df[:Date] = Date(df[:Date], "d-uuu-yy") + Base.Dates.Year(2000)

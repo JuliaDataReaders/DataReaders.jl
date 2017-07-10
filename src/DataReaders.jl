@@ -20,7 +20,7 @@ Options
 
 module DataReaders
 
-    export get, DataReader, DataSymbol, DataSymbols
+    export get, DataReader, DataSymbol
     export DataFrame, TimeArray
     export D_DATAREADERS
     
@@ -31,27 +31,27 @@ module DataReaders
     import RequestsCache: create_query, execute
     using TimeSeriesIO: TimeArray
 
-    abstract DataReader
-    type DataReaderGoogleDaily <: DataReader
+    abstract type DataReader end
+    struct DataReaderGoogleDaily <: DataReader
         retry_count::Int
         pause::AbstractFloat
         timeout::AbstractFloat
         session
     end
-    type DataReaderGoogleQuotes <: DataReader
+    struct DataReaderGoogleQuotes <: DataReader
         retry_count::Int
         pause::AbstractFloat
         timeout::AbstractFloat
         session
     end
-    type DataReaderYahooDaily <: DataReader
+    struct DataReaderYahooDaily <: DataReader
         retry_count::Int
         pause::AbstractFloat
         timeout::AbstractFloat
         session
     end
     
-    abstract DataReaderResponse
+    abstract type DataReaderResponse end
 
     D_DATAREADERS = OrderedDict(
         "google" => DataReaderGoogleDaily,
@@ -76,20 +76,19 @@ module DataReaders
     DEFAULT_DT_END = now(Dates.UTC)
     DEFAULT_DT_START = DEFAULT_DT_END - Dates.Day(7)
 
-    immutable DataSymbol
+    struct DataSymbol
         s::AbstractString
     end
     Base.hash(symb::DataSymbol, h::UInt) = hash(symb.s, hash(:DataSymbol, h))
     Base.:(==)(symb1::DataSymbol, symb2::DataSymbol) = isequal(symb1.s, symb2.s) 
 
     convert(::Type{DataSymbol}, s::String) = DataSymbol(s)
-    typealias DataSymbols Array{DataSymbol,1}
 
     include("google/daily.jl")
     include("google/quotes.jl")
     include("yahoo/daily.jl")
 
-    function get_several_symbols_to_ordereddict(dr::DataReader, symbols::DataSymbols, args...; kwargs...)
+    function get_several_symbols_to_ordereddict(dr::DataReader, symbols::Vector{DataSymbol}, args...; kwargs...)
         d = OrderedDict{DataSymbol,DataReaderResponse}()
         for symb in symbols
             data = get(dr, symb, args...; kwargs...)

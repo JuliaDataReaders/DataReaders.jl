@@ -62,7 +62,7 @@ julia> println(df);
 ```julia
 julia> dr = DataReader("google");
 
-julia> symbols = DataSymbols(["IBM", "MSFT"])
+julia> symbols = DataSymbol.(["IBM", "MSFT"])
 2-element Array{DataReaders.DataSymbol,1}:
  DataReaders.DataSymbol("IBM")
  DataReaders.DataSymbol("MSFT")
