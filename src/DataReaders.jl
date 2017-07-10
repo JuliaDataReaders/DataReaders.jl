@@ -31,27 +31,27 @@ module DataReaders
     import RequestsCache: create_query, execute
     using TimeSeriesIO: TimeArray
 
-    abstract type DataReader end
-    struct DataReaderGoogleDaily <: DataReader
+    abstract type AbstractDataReader end
+    struct DataReaderGoogleDaily <: AbstractDataReader
         retry_count::Int
         pause::AbstractFloat
         timeout::AbstractFloat
         session
     end
-    struct DataReaderGoogleQuotes <: DataReader
+    struct DataReaderGoogleQuotes <: AbstractDataReader
         retry_count::Int
         pause::AbstractFloat
         timeout::AbstractFloat
         session
     end
-    struct DataReaderYahooDaily <: DataReader
+    struct DataReaderYahooDaily <: AbstractDataReader
         retry_count::Int
         pause::AbstractFloat
         timeout::AbstractFloat
         session
     end
     
-    abstract type DataReaderResponse end
+    abstract type AbstractDataReaderResponse end
 
     D_DATAREADERS = OrderedDict(
         "google" => DataReaderGoogleDaily,
@@ -88,8 +88,8 @@ module DataReaders
     include("google/quotes.jl")
     include("yahoo/daily.jl")
 
-    function get_several_symbols_to_ordereddict(dr::DataReader, symbols::Vector{DataSymbol}, args...; kwargs...)
-        d = OrderedDict{DataSymbol,DataReaderResponse}()
+    function get_several_symbols_to_ordereddict(dr::AbstractDataReader, symbols::Vector{DataSymbol}, args...; kwargs...)
+        d = OrderedDict{DataSymbol,AbstractDataReaderResponse}()
         for symb in symbols
             data = get(dr, symb, args...; kwargs...)
             d[symb] = data
@@ -97,7 +97,7 @@ module DataReaders
         return d
     end
 
-    function get_response(url::AbstractString, query::Dict{AbstractString,AbstractString}, dr::DataReader)
+    function get_response(url::AbstractString, query::Dict{AbstractString,AbstractString}, dr::AbstractDataReader)
         if dr.session==nothing
             #r = get_streaming(url; query = query, timeout = dr.timeout)
             r = get(url; query = query, timeout = dr.timeout)
@@ -117,7 +117,7 @@ module DataReaders
         return r
     end
 
-    function DataFrame(multi_symbol_response::OrderedDict{DataSymbol,DataReaderResponse})
+    function DataFrame(multi_symbol_response::OrderedDict{DataSymbol,AbstractDataReaderResponse})
         d = OrderedDict{DataSymbol,DataFrame}()
         for (symb, response) in multi_symbol_response
             d[symb] = DataFrame(response)

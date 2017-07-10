@@ -1,4 +1,4 @@
-type DataReaderResponseGoogleDaily <: DataReaderResponse
+struct DataReaderResponseGoogleDaily <: AbstractDataReaderResponse
     r
 end
 

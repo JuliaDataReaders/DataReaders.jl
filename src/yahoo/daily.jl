@@ -1,4 +1,4 @@
-type DataReaderResponseYahooDaily <: DataReaderResponse
+struct DataReaderResponseYahooDaily <: AbstractDataReaderResponse
     r
 end
 
