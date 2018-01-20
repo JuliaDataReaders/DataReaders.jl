@@ -15,7 +15,7 @@ Inspired by [Pandas-DataReader](https://github.com/pydata/pandas-datareader).
 ## Install
 
 ```julia
-Pkg.clone("https://github.com/femtotrader/DataReaders.jl.git")
+Pkg.clone("https://github.com/JuliaDataReaders/DataReaders.jl.git")
 ```
 
 ## Usage
