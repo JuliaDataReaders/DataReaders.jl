@@ -112,7 +112,7 @@ module DataReaders
         #println(r.response)
         #if r.response.status / 100 != 2
         if r.status / 100 != 2
-            error("Error downloading data")
+            error("""Error : Not able to process request on the URl '""",url,"""' """)
         end
         return r
     end
