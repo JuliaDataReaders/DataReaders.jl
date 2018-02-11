@@ -112,7 +112,7 @@ module DataReaders
         #println(r.response)
         #if r.response.status / 100 != 2
         if r.status / 100 != 2
-            error("Error downloading data")
+            error("Error $(r.status) - not able to process request on the URL: $url with $query")
         end
         return r
     end

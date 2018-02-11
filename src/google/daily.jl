@@ -3,7 +3,7 @@ struct DataReaderResponseGoogleDaily <: AbstractDataReaderResponse
 end
 
 function get(dr::DataReaderGoogleDaily, symb::DataSymbol, dt_start::DateTime, dt_end::DateTime)
-    url = "http://www.google.com/finance/historical"
+    url = "http://finance.google.com/finance/historical"
     fmt = "uuu dd, yyyy"  # "%b %d, %Y"
     query = Dict{AbstractString,AbstractString}(
         "q" => symb.s,
